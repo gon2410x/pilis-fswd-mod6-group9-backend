@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import userRoutes from "./routes/user.router";
 import containerRoutes from "./routes/container.router";
+import organizationRoutes from "./routes/organization.router";
 
 import passportMiddleware from './middlewares/passport';
 import passport from 'passport'
@@ -19,5 +20,6 @@ passport.use(passportMiddleware);
 
 app.use("/api", userRoutes);
 app.use("/api", containerRoutes);
+app.use("/api", organizationRoutes);
 
 export default app;
