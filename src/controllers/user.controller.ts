@@ -44,9 +44,7 @@ export const getUser = async (req: Request, res: Response) => {
     const user = await User.findOne({ 
       where: { id_user: parseInt(id) },
     });
-    
 
-  
     if (!user) return res.status(404).json({ message: "User not found" });
   
     return res.json(user);
