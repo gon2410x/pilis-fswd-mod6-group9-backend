@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Province } from "../entity/Province";
 
 
-
+// <-- endpoint : return the pronvinces -->
 export const getProv = async (req: Request, res: Response) => {
   
     try {

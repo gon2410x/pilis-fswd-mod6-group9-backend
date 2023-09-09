@@ -5,21 +5,18 @@ import { Department } from "../entity/Department";
 import { Location } from "../entity/Location";
 
 
-export const getLocation = async (req: Request, res: Response) => {
+// <-- endpoint : return the locations of a department -->
+export const getLocations = async (req: Request, res: Response) => {
   
-    try {
+  try {
+    const { department } = req.body; 
+    
+    const locations = await Location.find( { where: { department: { department_name: department }} } )
 
-  //      const { id } = req.body;
-       
-        const loca = await Location.find({ 
- //         where: { id_department: parseInt(id) },
-          relations:['container','organization','department']
-        });
-       
-      return res.status(200).json(loca);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
-      }
+    return res.status(200).json(locations);
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
     }
-  };
+  }
+};

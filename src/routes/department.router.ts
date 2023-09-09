@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getDeps } from "../controllers/department.controller";
+import { getDepartments } from "../controllers/department.controller";
 
 
 const router = Router();
 
-router.get("/department", getDeps);
+router.post("/departments", getDepartments);
 
 
 export default router;

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { getLocation } from "../controllers/location.controller";
+import { getLocations } from "../controllers/location.controller";
 
 
 const router = Router();
 
-router.get("/location", getLocation);
+router.post("/locations", getLocations);
 
 
 export default router;
