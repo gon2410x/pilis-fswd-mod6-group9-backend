@@ -49,3 +49,65 @@ export const getLocation = async (req: Request, res: Response) => {
     await newLocation.save();
     return res.status(200).json({ ok: "true", message: "the department was successfully created"});
   };
+
+
+  export const updateLocation = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { department_name, location_name } = req.body;
+      
+    let update = {
+      location_name: "",
+     // province_name:"",
+      
+    }
+  
+    let loca = null;
+  
+    try {
+      loca = await Location.findOneBy({ id_location: parseInt(id) });
+  
+      if (!loca) return res.status(404).json({ message: "Not location found" });    
+  
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+    
+    try {
+      const depto_exist = await Department.find({ 
+      //  select: { id_province: true },
+        where: { department_name: department_name },
+      });
+        console.log("depto_exist",depto_exist);
+      if (depto_exist.length == 0) return res.status(404).json({ message: "Not department found" });
+  
+    //  update.province_name = province_name;
+  
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+      update.location_name =  location_name;
+      await Location.update( { id_location: parseInt(id) }, update );
+      return res.status(200).json({ ok: "true", message: "the location was successfully modified"});
+  }
+  
+  export const deleteLocation = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    
+    try {
+      const loca = await Location.findOneBy({ id_location:  parseInt(id) });
+    
+      if (!loca) return res.status(404).json({ message: "Location not found" });
+  
+      await Location.delete({ id_location:  parseInt(id) });
+  
+      return res.status(200).json({ ok:"true", message:"the location was successfully removed"});
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+  }
