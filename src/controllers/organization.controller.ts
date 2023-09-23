@@ -19,16 +19,17 @@ export const getOrganizations = async (req: Request, res: Response) => {
 
 export const createOrganization = async (req: Request, res: Response) => {
    
-    const { organization_name, phone, email, organization_type } = req.body;
+    const { organization_name, phone, email, organization_type, province, department, location } = req.body;
 
-    if (!organization_name || !phone || !email || !organization_type) {
+    if (!organization_name || !phone || !email || !organization_type || !location) {
         return res
             .status(400)
-            .json({ msg: "Please. Send your organization name, phone, email and organization type" });
+            .json({ msg: "Please. Send your organization name, phone, email, organization type and location" });
     }
+
+    const newOrganization = new Organization();
       
     try {
-          
         const organization = await Organization.find({ where: { organization_name } });
 
         if ( organization.length !== 0 ) {
@@ -36,25 +37,40 @@ export const createOrganization = async (req: Request, res: Response) => {
                 .status(400)
                 .json({ msg: "The Organization already Exists" });
           }
-
   
-        const newOrganization = new Organization();
         newOrganization.organization_name = organization_name;
         newOrganization.phone = phone;
         newOrganization.email = email;
         newOrganization.organization_type = organization_type;      
-        console.log(newOrganization);
-      
-        await newOrganization.save();
-        return res
-            .status(201)
-            .json({ ok: "true", messaje: "the organization was successfully registered"});
 
     } catch(error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
         }
     }
+
+    try {
+        const location_exist = await Location.findOne({ 
+            select: { id_location: true },
+            where: { location_name: location, department: { department_name: department, province: { province_name: province}} },
+        });
+        
+        if (!location_exist) return res.status(404).json({ message: "Not Location found" });
+    
+        newOrganization.location = location_exist;
+        console.log(newOrganization);
+        await newOrganization.save();
+
+        return res
+        .status(201)
+        .json({ ok: "true", messaje: "the organization was successfully registered"});
+    
+    } catch(error) {
+        if( error instanceof Error) {
+            return res.status(500).json({ message: error.message});
+        }
+    }
+
 };
 
 
